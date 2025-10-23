@@ -1,11 +1,11 @@
 const express = require("express");
 const path = require("path");
 const app = express();
-const db = require('./utils/db');
+const sequelize = require("./utils/db");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-const errorController = require('./controllers/error');
+const errorController = require("./controllers/error");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -17,5 +17,14 @@ app.use("/admin/", adminRoutes);
 app.use(shopRoutes);
 
 app.use(errorController.error404);
+
+sequelize
+  .sync()
+  .then((result) => {
+    console.log("Database synchronized", result);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.listen(3000);
