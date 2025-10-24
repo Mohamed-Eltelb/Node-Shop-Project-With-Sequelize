@@ -11,6 +11,7 @@ const errorController = require("./controllers/error");
 const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -36,6 +37,8 @@ Product.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
 User.hasMany(Product);
 User.hasOne(Cart);
 Cart.belongsTo(User, { constraints: true, onDelete: "CASCADE" });
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
   // .sync({ force: true })
@@ -55,6 +58,14 @@ sequelize
     return user;
   })
   .then((user) => {
+    return user.getCart().then((cart) => {
+      if (!cart) {
+        return user.createCart();
+      }
+      return cart;
+    });
+  })
+  .then(() => {
     app.listen(3000);
   })
   .catch((err) => {
