@@ -19,6 +19,7 @@ exports.postAddProduct = (req, res, next) => {
     imageUrl: imageUrl,
     description: description,
     price: price,
+    userId: req.user.id,
   })
     .then(() => {
       res.redirect("/products");
@@ -66,7 +67,7 @@ exports.postDeleteProduct = (req, res, next) => {
 
 //admin products
 exports.getAdminProducts = (req, res, next) => {
-  Product.findAll().then((products) => {
+  Product.findAll({ where: { userId: req.user.id } }).then((products) => {
     res.render("admin/products", {
       prods: products,
       docTitle: "Admin Products",
