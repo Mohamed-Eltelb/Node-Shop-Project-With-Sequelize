@@ -21,10 +21,9 @@ app.use(errorController.error404);
 sequelize
   .sync()
   .then((result) => {
-    console.log("Database synchronized", result);
+    app.listen(3000);
   })
   .catch((err) => {
     console.log(err);
   });
 
-app.listen(3000);
